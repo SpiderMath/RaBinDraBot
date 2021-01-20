@@ -19,10 +19,10 @@ class Akinator {
 	async init() {
 		await this.aki.start();
 		this.message.channel.send(`**${this.player.username}**, we're gonna start in a Minute, please send \`Y\` to confirm and \`N\` to cancel`);
-		const confirmation = await this.message.channel.awaitMessages(msg => msg.author.id === this.message.author.id && (msg.content.toLowerCase() === "n" || msg.content.toLowerCase() === "n"), { max: 1, time: toMs(60) });
+		const confirmation = await this.message.channel.awaitMessages(msg => msg.author.id === this.message.author.id && ["y", "n"].includes(msg.content.toLowerCase()), { max: 1, time: toMs(60) });
 		if(!confirmation.size) return this.message.channel.send(`${this.message.client.assets.emojis.error} No response recieved, cancelled command.`);
 
-		if(confirmation.first().toLowerCase() === "n") return this.message.channel.send(`${this.message.client.assets.emojis.checkmark} Cancelled the command successfully`);
+		if(confirmation.first().content.toLowerCase() === "n") return this.message.channel.send(`${this.message.client.assets.emojis.checkmark} Cancelled the command successfully`);
 
 		this.run();
 	}
