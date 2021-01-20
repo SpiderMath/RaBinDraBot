@@ -13,7 +13,6 @@ class Akinator {
 		this.aki = new Aki(region, !(message.channel.nsfw));
 	}
 
-	
 }
 
 module.exports = Akinator;
