@@ -32,6 +32,9 @@ class RaBinDraClient extends Discord.Client {
 		this.assets = {
 			emojis: emojis,
 		};
+		this.games = {
+			aki: new Discord.Collection(),
+		};
 	}
 
 	_loadCommands() {

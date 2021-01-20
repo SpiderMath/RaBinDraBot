@@ -1,94 +1,237 @@
-// eslint-disable-next-line no-unused-vars
-const { Message } = require("discord.js");
-const { MessageEmbed, toMs } = require("../../Util/Util");
-const { Aki } = require("aki-api");
-const region = "en";
-const { yellow, green } = require("../../Assets/JSON/colours.json");
-const { stripIndents } = require("common-tags");
+const {
+	Aki,
+} = require("aki-api");
+const {
+	EventEmitter,
+} = require("events");
+const { orange, yellow, green } = require("../../Assets/JSON/colours.json");
+const reactions = ["👍", "👎", "❔", "🤔", "🙄", "❌"];
 
-class Akinator {
+class AkiGame {
 	/**
-	 * @param {Message} message
+	 * AkiGame constructor
+	 * @param  {Discord.Message} message
+	 * @param  {Object} options Aki options
+	 *
 	 */
-	constructor(message) {
+	constructor(message, options = {}) {
+
+		if (!message) throw new Error("Message is required option.");
+
+		/**
+		 * Emitter
+		 * @type {EventEmitter}
+		 */
+		this.event = new EventEmitter();
+
+		/**
+		 * message
+		 * @type {Discord.Message}
+		 */
 		this.message = message;
-		this.player = message.author;
-		this.aki = new Aki(region, !(message.channel.nsfw));
+
+		/**
+		 * Array of emojis
+		 * @type {Array}
+		 */
+		this.reactions = reactions;
+
+		/**
+		 * Aki options
+		 * @type {Object}
+		 */
+		this.options = options;
+
+		/**
+		 * Game language
+		 * @type {string}
+		 */
+		this.language = options.language || "en";
+
+
+		/**
+		 * [aki description]
+		 * @type {Aki|null}
+		 */
+		this.aki = null;
+
+		/**
+		 * game message
+		 * @type {Discord.Message|null}
+		 */
+		this.embed = null;
+		/**
+		 * [win description]
+		 * @type {boolean|null}
+		 */
+		this.win = null;
 	}
-
-	async init() {
-		await this.aki.start();
-		this.message.channel.send(`**${this.player.username}**, we're gonna start in a Minute, please send \`Y\` to confirm and \`N\` to cancel`);
-		const confirmation = await this.message.channel.awaitMessages(msg => msg.author.id === this.message.author.id && ["y", "n"].includes(msg.content.toLowerCase()), { max: 1, time: toMs(60) });
-		if(!confirmation.size) return this.message.channel.send(`${this.message.client.assets.emojis.error} No response recieved, cancelled command.`);
-
-		if(confirmation.first().content.toLowerCase() === "n") return this.message.channel.send(`${this.message.client.assets.emojis.checkmark} Cancelled the command successfully`);
-
-		this.run();
+	/**
+	 *
+	 * @param  {string}   event
+	 * @param  {Function} callback
+	 * @return {AkiGame}
+	 */
+	on(event, callback) {
+		this.event.on(event, callback);
+		return this;
 	}
-
+	/**
+	 * Reset the game
+	 * @return {boolean}
+	 */
+	reset() {
+		this.win = null;
+		this.aki = null;
+		this.embed = null;
+		return true;
+	}
+	/**
+	 * React on a embed message
+	 * @return {Promise<boolean>}
+	 */
+	async react() {
+		for (const emoji of this.reactions) await this.embed.react(emoji);
+		return true;
+	}
+	/**
+	 * Start the game!
+	 * @return {Promise<AkiGame>}
+	 */
 	async run() {
-		const AkinatorEmbed = MessageEmbed(this.message.author, yellow)
-			.setTitle("Akinator")
-			.addField("Question", this.aki.question)
-			.addField("Answers", stripIndents`
-				1. ${this.aki.answers[0]}
-				2. ${this.aki.answers[1]}
-				3. ${this.aki.answers[2]}
-				4. ${this.aki.answers[3]}
-				5. ${this.aki.answers[4]}
-				6. Previous
-			`);
+		this.reset();
+		this.event.emit("start", this);
 
-		this.message.channel.send(AkinatorEmbed);
+		this.aki = new Aki(this.language);
 
-		const filter = (res) => {
-			return (res.author.id === this.message.author.id) && /^[1-6]$/i.test(res.content);
-		};
+		await this.aki.start();
 
-		const responses = (await this.message.channel.awaitMessages(filter, { max: 1, time: toMs(60) }));
-		if(!responses.size) return this.message.channel.send("I didn't get any response so I assume that I won..");
+		const {
+			question,
+			answers,
+			currentStep,
+		} = this.aki;
 
-		if(responses.first().content === "5") await this.aki.back();
-
-		else await this.aki.step(Number.parseInt(responses.first().content));
-
-		if(this.aki.progress >= 70 || this.aki.currentStep >= 78) {
-			this.i = 0;
-			await this.aki.win();
-			return this.win();
-		}
-
-		this.run();
+		this.message.channel.send({
+			embed: {
+				title: `${this.message.author.username}, Question ${currentStep + 1}`,
+				color: yellow,
+				description: `**${question}**\n${answers.map((x, i) => `${x} | ${this.reactions[i]}`).join("\n")}`,
+			},
+		}).then(msg => {
+			this.embed = msg;
+			this.react();
+			this.waitForReaction();
+		});
+		return this;
 	}
+	/**
+	 * Ends the game!
+	 * @return {undefined}
+	 */
+	end() {
 
-	async win() {
-		const answer = this.aki.answers[this.i];
-		if(!answer) return this.message.channel.send("I don't know...");
+		const {
+			answers,
+		} = this.aki;
 
-		const AnswerEmbed = MessageEmbed(this.message.author, "ORANGE")
-			.setTitle(`Akinator Guess: ${this.i + 1}`)
-			.addField(`Name: ${answer.name}`, `Description: ${answer.description}`)
-			.setImage(answer.absolute_picture_path)
-			.setDescription("Is this answer correct? (Respond with **Y/N**)");
+		this.embed.edit({
+			embed: {
+				title: "Is this your character?",
+				color: orange,
+				image: {
+					url: answers[0].absolute_picture_path,
+				},
+				description: `**${answers[0].name}**\n${answers[0].description}\nRanking as **#${answers[0].ranking}**\n\n[yes (**y**) / no (**n**)]`,
+			},
+		});
 
-		this.message.channel.send(AnswerEmbed);
+		const filter = m => m.author.id === this.message.author.id && /(yes|y|no|n)/i.test(m.content);
 
-		const responses = await this.message.channel.awaitMessages((res) => {
-			return (res.author.id === this.message.author.id) && (/^[yn]/i.test(res.content.toLowerCase()));
-		}, { max: 1, time: toMs(60) });
+		this.message.channel.awaitMessages(filter, {
+			time: 30000,
+			max: 1,
+			errors: ["time"],
+		}).then(collected => {
+			const content = collected.first().content;
+			this.win = /(yes|y)/i.test(content) ? true : false;
+			this.event.emit("end", this);
+			this.embed.edit({
+				embed: {
+					title: this.win ? "Great! Guessed right one more time." : "Uh. you are win",
+					color: green,
+					description: "I love playing with you!",
+				},
+			});
+		}).catch(() => {
+			this.event.emit("end", this);
+		});
 
-		if(responses.first().content.toLowerCase() === "n") {
-			this.i++;
-			this.win();
-		}
-		else {
-			const WinEmbed = MessageEmbed(this.message.author, green)
-				.setTitle("Akinator")
-				.setDescription(`${this.message.client.assets.emojis.checkmark} I won again!`);
-			this.message.channel.send(WinEmbed);
-		}
+	}
+	/**
+	 * Start the game collector.
+	 * @return {undefined}
+	 */
+	waitForReaction() {
+		const filter = (reaction, user) => user.id === this.message.author.id && this.reactions.includes(reaction.emoji.name);
+		const collector = this.embed.createReactionCollector(filter, {
+			time: typeof this.options.time === "number" ? this.options.time : 60000 * 6,
+		});
+		collector.on("collect", async (reaction, user) => {
+			reaction.users.remove(user).catch(() => null);
+
+			if (reaction.emoji.name === "❌") {
+				collector.stop();
+				this.win = false;
+				this.embed.delete();
+				this.event.emit("end", this);
+				return;
+			}
+
+			await this.aki.step(this.reactions.indexOf(reaction.emoji.name));
+
+			const {
+				question,
+				answers,
+				currentStep,
+				progress,
+			} = this.aki;
+
+			if (progress >= 70 || currentStep >= 78) {
+				this.embed.reactions.removeAll().catch(() => null);
+				await this.aki.win();
+				collector.stop();
+				this.end();
+			}
+			else {
+				this.embed.edit({
+					embed: {
+						title: `${this.message.author.username}, Question ${currentStep + 1}`,
+						description: `**${question}**\n${answers.map((x, i) => `${x} | ${this.reactions[i]}`).join("\n")}`,
+						color: yellow,
+					},
+				});
+			}
+		});
+	}
+	/**
+	 * Set game language.
+	 * @param {string} available language at: https://github.com/jgoralcz/aki-api/blob/develop/src/lib/constants/Client.js#L4
+	 * @return {AkiGame}
+	 */
+	setLanguage(language) {
+		this.language = language;
+		return this;
+	}
+	/**
+	 * Set rection colllector time.
+	 * @param {number} time (in milliseconds)
+	 * @return {AkiGame}
+	 */
+	setTime(time) {
+		this.options.time = time;
+		return this;
 	}
 }
 
-module.exports = Akinator;
+module.exports = AkiGame;
