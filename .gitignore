@@ -1,0 +1,4 @@
+node_modules
+.env
+application.yml
+Util/Client/imgFlipUsernames.json

@@ -1,0 +1,18 @@
+[
+	{
+		"text": "{CMDS} commands",
+		"type": "LISTENING"
+	},
+	{
+		"text": "{USERS} users",
+		"type": "WATCHING"
+	},
+	{
+		"text": "{CHANNELS} channels",
+		"type": "WATCHING"
+	},
+	{
+		"text": "{GUILDS} guilds",
+		"type": "WATCHING"
+	}
+]
