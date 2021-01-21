@@ -10,6 +10,7 @@ module.exports = {
 	description: "Gets the Latest XKCD comic",
 	cooldown: 10,
 	aliases: ["current-xkcd", "xkcd-latest", "latest-xkcd"],
+	cPerms: ["EMBED_LINKS"],
 	/**
 	 * @param {Message} message
 	 */

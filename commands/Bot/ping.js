@@ -7,7 +7,7 @@ module.exports = {
 	name: "ping",
 	description: "",
 	aliases: [],
-	cPerms: [],
+	cPerms: ["EMBED_LINKS"],
 	mPerms: [],
 	cooldown: 2,
 	/**

@@ -7,34 +7,40 @@ const { green } = require("../../Assets/JSON/colours.json");
 module.exports = {
 	name: "avatarfusion",
 	description: "Fuses the avatar of two users",
-	cPerms: ["ATTACH_FILES"],
+	cPerms: ["ATTACH_FILES", "EMBED_LINKS"],
 	minArgs: 1,
 	/**
 	 * @param {Message} message
 	 * @param {String[]} args
 	 */
 	async run(message, args) {
-		const baseUser = message.mentions.users.first() || message.client.users.cache.get(args[0]) || message.author;
-		const overlayUser = message.mentions.users.array()[1] || message.client.users.cache.get(args[1]) || message.mentions.users.first() || message.client.users.cache.get(args[0]);
+		const msg = await message.channel.send(`${message.client.assets.emojis.loading} Processing your request..`);
+		try {
+			const baseUser = message.mentions.users.first() || message.client.users.cache.get(args[0]) || message.author;
+			const overlayUser = message.mentions.users.array()[1] || message.client.users.cache.get(args[1]) || message.mentions.users.first() || message.client.users.cache.get(args[0]);
 
-		const base = await loadImage(baseUser.displayAvatarURL({ dynamic: false, size: 512, format: "png" }));
-		const overlay = await loadImage(overlayUser.displayAvatarURL({ dynamic: false, size: 512, format: "png" }));
+			const base = await loadImage(baseUser.displayAvatarURL({ dynamic: false, size: 512, format: "png" }));
+			const overlay = await loadImage(overlayUser.displayAvatarURL({ dynamic: false, size: 512, format: "png" }));
 
-		const canvas = createCanvas(base.width, base.height);
-		const ctx = canvas.getContext("2d");
+			const canvas = createCanvas(base.width, base.height);
+			const ctx = canvas.getContext("2d");
 
-		ctx.globalAlpha = 0.5;
+			ctx.globalAlpha = 0.5;
 
-		ctx.drawImage(base, 0, 0);
-		ctx.drawImage(overlay, 0, 0);
+			ctx.drawImage(base, 0, 0);
+			ctx.drawImage(overlay, 0, 0);
 
-		const fusedAvatarAttachment = new MessageAttachment(canvas.toBuffer(), "fused-avatar.png");
+			const fusedAvatarAttachment = new MessageAttachment(canvas.toBuffer(), "fused-avatar.png");
 
-		const fusedAvatarEmbed = MessageEmbed(message.author, green)
-			.setTitle(`Fusion of ${baseUser.tag} and ${overlayUser.tag}`)
-			.attachFiles([fusedAvatarAttachment])
-			.setImage("attachment://fused-avatar.png");
+			const fusedAvatarEmbed = MessageEmbed(message.author, green)
+				.setTitle(`Fusion of ${baseUser.tag} and ${overlayUser.tag}`)
+				.attachFiles([fusedAvatarAttachment])
+				.setImage("attachment://fused-avatar.png");
 
-		message.channel.send(fusedAvatarEmbed);
+			message.channel.send(fusedAvatarEmbed).then(() => msg.delete());
+		}
+		catch(err) {
+			message.channel.send(`SOmething went wrong please try again later!\n **Error: ** ${err.message}`).then(() => msg.delete());
+		}
 	},
 };

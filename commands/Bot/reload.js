@@ -38,6 +38,6 @@ module.exports = {
 			}
 		});
 
-		msg.edit(`${client.assets.emojis.checkmark} Reloaded the command ${args[0].toLowerCase()}`);
+		msg.edit(`${client.assets.emojis.checkmark} Reloaded the command \`${args[0].toLowerCase()}\``);
 	},
 };

@@ -10,6 +10,7 @@ const { dependencies } = require("../../package.json");
 module.exports = {
 	name: "stats",
 	description :"Shows the stats of the bot (and also its hosting)",
+	cPerms: ["EMBED_LINKS"],
 	aliases: [],
 	/**
 	 * @param {Message} message
