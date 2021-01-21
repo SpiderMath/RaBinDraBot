@@ -11,14 +11,13 @@ module.exports = {
 	minArgs: 1,
 	/**
 	 * @param {Message} message
-	 * @param {String[]} args
 	 */
-	async run(message, args) {
+	async run(message) {
 		const msg = await message.channel.send(`${message.client.assets.emojis.loading} Processing your request..`);
 		try {
-			const baseUser = message.mentions.users.first() || message.client.users.cache.get(args[0]) || message.author;
-			const overlayUser = message.mentions.users.array()[1] || message.client.users.cache.get(args[1]) || message.mentions.users.first() || message.client.users.cache.get(args[0]);
-
+			const baseUser = message.mentions.users.first() || message.author;
+			const overlayUser = message.mentions.users.array()[1] || message.mentions.users.first();
+			if(!overlayUser) return message.channel.send(`${message.client.assets.emojis.error} You didn't provide a valid user for overlay!`);
 			const base = await loadImage(baseUser.displayAvatarURL({ dynamic: false, size: 512, format: "png" }));
 			const overlay = await loadImage(overlayUser.displayAvatarURL({ dynamic: false, size: 512, format: "png" }));
 
