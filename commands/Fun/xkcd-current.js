@@ -9,7 +9,7 @@ module.exports = {
 	name: "xkcd-current",
 	description: "Gets the Latest XKCD comic",
 	cooldown: 10,
-	aliases: ["current-xkcd"],
+	aliases: ["current-xkcd", "xkcd-latest", "latest-xkcd"],
 	/**
 	 * @param {Message} message
 	 */
@@ -21,9 +21,9 @@ module.exports = {
 			const month = months[data.month - 1];
 
 			const xkcdEmbed = MessageEmbed(message.author, green)
-				.setTitle("Current XKCD")
+				.setTitle("Latest XKCD")
 				.setImage(data.img)
-				.setDescription(`**Date Published:** ${month} ${data.year}`);
+				.setDescription(`**Date Published:** ${data.day} ${month} ${data.year}\n **Title:** ${data.title}`);
 
 			message.channel.send(xkcdEmbed)
 				.then(() => msg.delete());
