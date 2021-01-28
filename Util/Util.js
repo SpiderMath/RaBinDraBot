@@ -61,6 +61,14 @@ class Util {
 		if (typeof dict !== "object") throw new TypeError("Dictionary must be an object");
 		return text.split("").map(letter => dict[letter] || letter).join(join);
 	}
+
+	/**
+	 * @param {Error} err
+	 * @param {Discord.Message} message
+	 */
+	static errMsg(err, message) {
+		return `${message.client.assets.emojis.error} Something went wrong while executing this command! Please try again later!\n **Error: ** ${err.message}`;
+	}
 }
 
 module.exports = Util;
