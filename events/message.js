@@ -12,6 +12,7 @@ const AutoReactOnLol = require("../Plugins/Message/AutoReactOnLol");
 const AutoReactOnMention = require("../Plugins/Message/AutoReactOnMention");
 const AutoReactOnWTF = require("../Plugins/Message/AutoReactOnWTF");
 const SendF = require("../Plugins/Message/SendF");
+const CussWordFilter = require("../Plugins/Message/CussWordFilter");
 
 module.exports = {
 	name: "message",
@@ -28,6 +29,7 @@ module.exports = {
 		AutoReactOnWTF(message);
 		SendF(message);
 		AutoReactOnLol(message);
+		CussWordFilter(message);
 
 		// Command Loader
 		if(!message.content.startsWith(prefix.toLowerCase())) return;
