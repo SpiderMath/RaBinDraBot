@@ -13,6 +13,7 @@
     "aki-api": "^5.2.1",
     "ascii-table": "^0.0.9",
     "axios": "^0.21.1",
+    "bombsweeper.js": "^1.0.1",
     "canvas": "^2.6.1",
     "chalk": "^4.1.0",
     "cheerio": "^0.20.0",

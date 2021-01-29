@@ -34,6 +34,7 @@ class RaBinDraClient extends Discord.Client {
 		};
 		this.games = {
 			aki: new Discord.Collection(),
+			minesweeper: new Discord.Collection(),
 		};
 	}
 

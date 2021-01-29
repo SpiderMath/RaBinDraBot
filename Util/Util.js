@@ -1,6 +1,9 @@
 const { MAX_SAFE_INTEGER } = Number;
 const Discord = require("discord.js");
 
+const yes = ["yes", "y", "ye", "yeah", "yup", "yea", "ya", "hai", "si", "sí", "oui", "はい", "correct"];
+const no = ["no", "n", "nah", "nope", "nop", "iie", "いいえ", "non", "fuck off"];
+
 class Util {
 	static isSafeNumber(num) {
 		if(isNaN(num)) return false;
@@ -68,6 +71,35 @@ class Util {
 	 */
 	static errMsg(err, message) {
 		return `${message.client.assets.emojis.error} Something went wrong while executing this command! Please try again later!\n **Error: ** ${err.message}`;
+	}
+
+
+	/**
+	 * @param {String[]} arr
+	 * @param {any} value
+	 */
+	static removeFromArray(arr, value) {
+		const index = arr.indexOf(value);
+		if (index > -1) return arr.splice(index, 1);
+		return arr;
+	}
+
+
+	static async verify(channel, user, { time = 30000, extraYes = [], extraNo = [] } = {}) {
+		const filter = res => {
+			const value = res.content.toLowerCase();
+			return (user ? res.author.id === user.id : true)
+				&& (yes.includes(value) || no.includes(value) || extraYes.includes(value) || extraNo.includes(value));
+		};
+		const verify = await channel.awaitMessages(filter, {
+			max: 1,
+			time,
+		});
+		if (!verify.size) return 0;
+		const choice = verify.first().content.toLowerCase();
+		if (yes.includes(choice) || extraYes.includes(choice)) return true;
+		if (no.includes(choice) || extraNo.includes(choice)) return false;
+		return false;
 	}
 }
 
