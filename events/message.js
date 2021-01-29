@@ -13,6 +13,7 @@ const AutoReactOnMention = require("../Plugins/Message/AutoReactOnMention");
 const AutoReactOnWTF = require("../Plugins/Message/AutoReactOnWTF");
 const SendF = require("../Plugins/Message/SendF");
 const CussWordFilter = require("../Plugins/Message/CussWordFilter");
+const OwOCounter = require("../Plugins/Message/OwOCounter");
 
 module.exports = {
 	name: "message",
@@ -20,7 +21,7 @@ module.exports = {
 	 * @param {RaBinDraClient} client
 	 * @param {Discord.Message} message
 	 */
-	run(client, message) {
+	async run(client, message) {
 		// Returning if the Message Author is a Bot or Webhook
 		if(message.author.bot || message.webhookID) return;
 
@@ -30,6 +31,7 @@ module.exports = {
 		SendF(message);
 		AutoReactOnLol(message);
 		CussWordFilter(message);
+		await OwOCounter(message);
 
 		// Command Loader
 		if(!message.content.startsWith(prefix.toLowerCase())) return;

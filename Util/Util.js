@@ -1,5 +1,9 @@
 const { MAX_SAFE_INTEGER } = Number;
+const { stripIndents } = require("common-tags");
 const Discord = require("discord.js");
+const { MONGOPASS: MongoPass, OWNER: ownerID } = process.env;
+const mongoose = require("mongoose");
+const { red } = require("../Assets/JSON/colours.json");
 
 const yes = ["yes", "y", "ye", "yeah", "yup", "yea", "ya", "hai", "si", "sí", "oui", "はい", "correct"];
 const no = ["no", "n", "nah", "nope", "nop", "iie", "いいえ", "non", "fuck off"];
@@ -100,6 +104,48 @@ class Util {
 		if (yes.includes(choice) || extraYes.includes(choice)) return true;
 		if (no.includes(choice) || extraNo.includes(choice)) return false;
 		return false;
+	}
+
+	/**
+	 * @param {String} uri
+	 */
+	static mongoURI(uri) {
+		return uri.replace(/<password>/g, MongoPass);
+	}
+
+	/**
+	 * @param {String} uri
+	 * @param {mongoose.Schema} schema
+	 * @param {String} schemaName
+	 */
+	static async mongoModel(uri, schema, schemaName) {
+		const connection = await mongoose.createConnection(uri.replace(/<password>/g, MongoPass), {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		});
+
+		const model = connection.model(schemaName, schema);
+
+		return model;
+	}
+
+	/**
+	 * @param {Error} err
+	 * @param {Discord.Message} message
+	 */
+	static dmOwner(err, message) {
+		const errorEmbed = new Discord.MessageEmbed()
+			.setColor(red || "RED")
+			.setTimestamp()
+			.setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
+			.setTitle("New Error")
+			.addField("Error Message", `\`\`\`js\n${err.message}\n\`\`\``);
+			// .addField("Error Stack", `\`\`\`js\n${err.stack}\n\`\`\``);
+
+		message.client.users.cache.get(ownerID).send({ split: true, embed: errorEmbed });
+		message.client.users.cache.get(ownerID).send(stripIndents`
+			**Stack: ** ${err.stack}
+		`, { split: true });
 	}
 }
 

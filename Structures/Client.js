@@ -36,6 +36,7 @@ class RaBinDraClient extends Discord.Client {
 			aki: new Discord.Collection(),
 			minesweeper: new Discord.Collection(),
 		};
+		this.antiSpam = new Discord.Collection();
 	}
 
 	_loadCommands() {
