@@ -147,6 +147,15 @@ class Util {
 			**Stack: ** ${err.stack}
 		`, { split: true });
 	}
+
+	/**
+	 * @param {Discord.Message} message
+	 */
+	static async loadingMsg(message) {
+		const msg = await message.channel.send(`${message.client.assets.emojis.loading} Processing your request...`);
+
+		return msg;
+	}
 }
 
 module.exports = Util;

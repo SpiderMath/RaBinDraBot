@@ -17,13 +17,15 @@ module.exports = async function OwOCounter(message) {
 	try {
 		const Data = await mongoModel(owoCounter, OwOCounterSchema, "counter");
 
-		Data.findOne({ _id: message.author.id }, (err, data) => {
+		Data.findOne({ _id: message.guild.id }, (err, data) => {
 			if(err) return dmOwner(err, message);
 
 			if(!data) {
 				const newData = new Data({
-					_id: message.author.id,
-					count: 1,
+					_id: message.guild.id,
+					data: [
+						{ user: message.author.id, count: 1 },
+					],
 				});
 
 				message.channel.send("**OwO Counter:** +1");
@@ -33,7 +35,9 @@ module.exports = async function OwOCounter(message) {
 
 			}
 			else {
-				data.count += 1;
+				const userCount = data.data.filter(d => d.user === message.author.id)[0];
+				if(!userCount) userCount.user = message.author.id;
+				userCount.count += 1;
 
 				message.channel.send("**OwO Counter:** +1");
 

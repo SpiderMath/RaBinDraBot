@@ -14,6 +14,9 @@ const AutoReactOnWTF = require("../Plugins/Message/AutoReactOnWTF");
 const SendF = require("../Plugins/Message/SendF");
 const CussWordFilter = require("../Plugins/Message/CussWordFilter");
 const OwOCounter = require("../Plugins/Message/OwOCounter");
+const SendOwO = require("../Plugins/Message/SendOwO");
+const SendUwU = require("../Plugins/Message/SendUwU");
+
 
 module.exports = {
 	name: "message",
@@ -32,6 +35,8 @@ module.exports = {
 		AutoReactOnLol(message);
 		CussWordFilter(message);
 		await OwOCounter(message);
+		SendOwO(message);
+		SendUwU(message);
 
 		// Command Loader
 		if(!message.content.startsWith(prefix.toLowerCase())) return;

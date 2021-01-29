@@ -5,8 +5,8 @@ const OwOCounterSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	count: {
-		type: Number,
+	data: {
+		type: Array,
 		required: true,
 	},
 });
