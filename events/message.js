@@ -58,15 +58,24 @@ module.exports = {
 		if(command.minArgs && typeof command.minArgs === "number" && !args[command.minArgs - 1]) {
 			return message.channel.send("I need more arguments");
 		}
+
 		if(command.cPerms) {
 			if(typeof command.cPerms === "string") command.cPerms = [command.cPerms];
 			if(!Array.isArray(command.cPerms)) throw new Error("Client Permissions is not an Array");
 			const permissions = message.channel.permissionsFor(message.guild.me);
 
 			if(!permissions.has("SEND_MESSAGES")) return;
+			let bool;
 			for(const perm of command.cPerms) {
-				if(!permissions.has(perm)) return message.channel.send(`I don't have the necessary permissions to use this command! I need \`${softPerms[perm]}\` Permissions to **execute** this command!`);
+				if(permissions.has(perm)) {
+					message.channel.send(`${message.client.assets.emojis.error} You don't have the necessary permissions to use this command! You need ${perm} to execute this command`);
+					bool = false;
+					break;
+				}
+				bool = true;
 			}
+
+			if(!bool) return;
 		}
 
 		if(command.mPerms) {

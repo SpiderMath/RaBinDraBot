@@ -63,33 +63,6 @@ class RockPaperScissors {
 
 				if(!p2Stuff.size) return this.message.channel.send(`**${this.challenger.tag}**, it seems like ${this.challenged} is scared of playing against you~`);
 				this.challenged.pick = p2Stuff.first().content.toLowerCase();
-
-				// // const p1Stuff = await p1Msg.channel.awaitMessages(Pmsg => Pmsg.author.id === this.challenger.id && rps.includes(Pmsg.content.toLowerCase()), { max: 1, time: 60000 });
-				// // const p2Stuff = await p2Msg.channel.awaitMessages(PMsg => PMsg.author.id === this.challenged.id && rps.includes(PMsg.content.toLowerCase()), { max: 1, time: 60000 });
-
-				// // if(!p1Stuff.size) return this.message.channel.send(`**${this.challenged.tag}**, it seems like ${this.challenger} is scared of playing against you~`);
-				// // if(!p2Stuff.size) return this.message.channel.send(`**${this.challenger.tag}**, it seems like ${this.challenged} is scared of playing against you~`);
-
-				// // this.challenger.pick = p1Stuff.first().content.toLowerCase();
-				// // this.challenged.pick = p2Stuff.first().content.toLowerCase();
-
-				// // await p1Stuff.first().react(this.message.client.assets.emojis.checkmark);
-				// // await p2Stuff.first().react(this.message.client.assets.emojis.checkmark);
-
-				// const p1Collector = p1Msg.channel.createMessageCollector(PMsg => PMsg.author.id === this.challenger.id && rps.includes(PMsg.content.toLowerCase()), { time: 60000, max: 1 });
-				// const p2Collector = p2Msg.channel.createMessageCollector(PMsg => PMsg.author.id === this.challenger.id && rps.includes(PMsg.content.toLowerCase()), { time: 60000, max: 1 });
-
-				// p1Collector.on("end", (collected) => {
-				// 	if(!collected.first()) return this.message.channel.send(`**${this.challenged.tag}**, it seems like ${this.challenger} is scared of playing against you~`);
-
-				// 	this.challenger.pick = collected.first().content.toLowerCase();
-				// });
-
-				// p2Collector.on("end", (collected) => {
-				// 	if(!collected.first()) return this.message.channel.send(`**${this.challenger.tag}**, it seems like ${this.challenged} is scared of playing against you~`);
-
-				// 	this.challenged.pick = collected.first().content.toLowerCase();
-				// });
 			}
 			catch (err) {
 				return this.message.channel.send("Can both of guys check if you have your DMs Open for me? Because I don't think you peeps do as I'm unable to send messages to you..." + err.message);

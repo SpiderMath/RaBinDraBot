@@ -156,6 +156,36 @@ class Util {
 
 		return msg;
 	}
+
+	/**
+	 * @param {Number} miliseconds
+	 */
+	static parseMS(miliseconds) {
+
+		if (typeof milliseconds !== "number") {
+			throw new TypeError("Expected a number");
+		}
+
+		const roundTowardsZero = miliseconds > 0 ? Math.floor : Math.ceil;
+
+		return {
+			days: roundTowardsZero(miliseconds / 86400000),
+			hours: roundTowardsZero(miliseconds / 3600000) % 24,
+			minutes: roundTowardsZero(miliseconds / 60000) % 60,
+			seconds: roundTowardsZero(miliseconds / 1000) % 60,
+			milliseconds: roundTowardsZero(miliseconds) % 1000,
+			microseconds: roundTowardsZero(miliseconds * 1000) % 1000,
+			nanoseconds: roundTowardsZero(miliseconds * 1e6) % 1000,
+		};
+	}
+
+
+	static formatBytes(bytes) {
+		const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+		if (bytes == 0) return "0 Byte";
+		const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+		return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
+	}
 }
 
 module.exports = Util;
