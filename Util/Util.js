@@ -186,6 +186,31 @@ class Util {
 		const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
 		return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
 	}
+
+	/**
+	 * @param {Boolean} bool
+	 */
+	static checkOrCross(bool, message) {
+		return bool ? message.client.assets.emojis.checkmark : message.client.assets.emojis.error;
+	}
+
+	/**
+	 * @param {Discord.Message} message
+	 * @param {String} text the Message you want the bot to send
+	 */
+	static async ReactVerify(message, text) {
+		const msg = await message.channel.send(text);
+		msg.react(message.client.assets.emojis.checkmark);
+		msg.react(message.client.assets.emojis.error);
+
+		const reacts = await msg.awaitReactions((reaction, user) => [
+			message.client.emojis.cache.get(message.client.assets.emojis.error.split(/:/g)[2].slice(0, 18)).name,
+			message.client.emojis.cache.get(message.client.assets.emojis.checkmark.split(/:/g)[2].slice(0, 18)).name,
+		].includes(reaction.emoji.name) && user.id === message.author.id, { max: 1, time: 60000 });
+
+		if(!reacts.size || reacts.first().emoji.name === message.client.emojis.cache.get(message.client.assets.emojis.error.split(/:/g)[2].slice(0, 18)).name) return false;
+		return true;
+	}
 }
 
 module.exports = Util;

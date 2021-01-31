@@ -1,18 +1,18 @@
 const { errMsg, toMs } = require("../../Util/Util");
 
 module.exports = {
-	name: "kick",
-	description: "Kicks a Member from the server!",
+	name: "ban",
+	description: "Bans a Member from the server!",
 	aliases: [],
-	cPerms: ["KICK_MEMBERS", "MANAGE_MEMBERS"],
-	mPerms: ["KICK_MEMBERS", "MANAGE_MEMBERS"],
+	cPerms: ["BAN_MEMBERS", "MANAGE_MEMBERS"],
+	mPerms: ["BAN_MEMBERS", "MANAGE_MEMBERS"],
 	async run(message, args) {
 		try {
 			const targetUser = message.mentions.users.first() || message.client.users.cache.get(args[0]);
 			args.shift();
 			if(!targetUser) return message.channel.send(`${message.client.assets.emojis.error} You didn't provide a valid user to kick from the server!`);
 
-			const msg = await message.channel.send(`Are you sure that you want to kick ${targetUser.tag}?`);
+			const msg = await message.channel.send(`Are you sure that you want to ban ${targetUser.tag}?`);
 
 			msg.react(message.client.assets.emojis.checkmark);
 			msg.react(message.client.assets.emojis.error);
@@ -29,7 +29,7 @@ module.exports = {
 
 			const target = message.guild.members.cache.get(targetUser.id);
 			target
-				.kick(args.join(" ") || `By ${message.author.tag} on ${new Date().toUTCString()}, Reason not specified`)
+				.ban(args.join(" ") || `By ${message.author.tag} on ${new Date().toUTCString()}, Reason not specified`)
 				.then(() => msg.delete())
 				.then(() => message.channel.send(`${message.client.assets.emojis.checkmark} Successfully banned **${target.tag}** from the server`));
 		}

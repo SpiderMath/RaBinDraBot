@@ -5,7 +5,6 @@ const Discord = require("discord.js");
 const { PREFIX: prefix, OWNER: owner } = process.env;
 const { toMs } = require("../Util/Util");
 const cooldowns = new Discord.Collection();
-const softPerms = require("../Assets/JSON/perms.json");
 
 // Plugins
 const AutoReactOnLol = require("../Plugins/Message/AutoReactOnLol");
@@ -65,6 +64,8 @@ module.exports = {
 			const permissions = message.channel.permissionsFor(message.guild.me);
 
 			if(!permissions.has("SEND_MESSAGES")) return;
+
+			if(!permissions.has("EMBED_LINKS") || !permissions.has("ADD_REACTIONS")) return message.channel.send(`${client.assets.emojis.error} I do not have Embed Link or Add Reactions Permissions in the server! Please give me those permissions to allow me to function.`);
 			let bool;
 			for(const perm of command.cPerms) {
 				if(permissions.has(perm)) {
@@ -80,14 +81,21 @@ module.exports = {
 
 		if(command.mPerms) {
 			if(typeof command.mPerms === "string") command.mPerms = [command.mPerms];
-			if(!Array.isArray(command.mPerms)) throw new Error("Member Permissions is not an Array");
-			const permissions = message.channel.permissionsFor(message.guild.me);
+			if(!Array.isArray(command.mPerms)) throw new Error("Client Permissions is not an Array");
+			const permissions = message.channel.permissionsFor(message.author);
 
+			let bool;
 			for(const perm of command.mPerms) {
-				if(!permissions.has(perm)) return message.channel.send(`**You** don't have the necessary permissions to **use** this command! You need \`${softPerms[perm]}\` Permissions to **use** this command!`);
+				if(permissions.has(perm)) {
+					message.channel.send(`${message.client.assets.emojis.error} You don't have the necessary permissions to use this command! You need ${perm} to execute this command`);
+					bool = false;
+					break;
+				}
+				bool = true;
 			}
-		}
 
+			if(!bool) return;
+		}
 
 		// #Cooldowns Oh Yeah
 		if(!cooldowns.has(command.name)) cooldowns.set(command.name, new Discord.Collection());
