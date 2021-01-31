@@ -211,6 +211,10 @@ class Util {
 		if(!reacts.size || reacts.first().emoji.name === message.client.emojis.cache.get(message.client.assets.emojis.error.split(/:/g)[2].slice(0, 18)).name) return false;
 		return true;
 	}
+
+	static delay(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
 }
 
 module.exports = Util;

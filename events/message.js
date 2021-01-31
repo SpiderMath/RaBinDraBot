@@ -15,6 +15,7 @@ const CussWordFilter = require("../Plugins/Message/CussWordFilter");
 const OwOCounter = require("../Plugins/Message/OwOCounter");
 const SendOwO = require("../Plugins/Message/SendOwO");
 const SendUwU = require("../Plugins/Message/SendUwU");
+const AutoReactOnPog = require("../Plugins/Message/AutoReactOnPog");
 
 
 module.exports = {
@@ -36,6 +37,7 @@ module.exports = {
 		await OwOCounter(message);
 		SendOwO(message);
 		SendUwU(message);
+		AutoReactOnPog(message);
 
 		// Command Loader
 		if(!message.content.startsWith(prefix.toLowerCase())) return;
