@@ -49,10 +49,10 @@ class RaBinDraClient extends Discord.Client {
 		const blue = "\x1b[34m";
 
 		this.logger = {
-			error: (name, data) => console.log(`${BGred}${moment} --${red}${name}-- ${reset}${data}`),
-			normal: (name, data) => console.log(`${BGblue}${moment} --${blue}${name} -- ${reset}${data}`),
-			success: (name, data) => console.log(`${BGgreen}${moment} -- ${green}${name} -- ${reset}${data}`),
-			warn: (name, data) => console.log(`${BGyellow}${moment} -- ${yellow}${name} --${reset}${data}`),
+			error: (name, data) => console.log(`${BGred}${moment()} --${red}${name}-- ${reset}${data}`),
+			normal: (name, data) => console.log(`${BGblue}${moment()} --${blue}${name} -- ${reset}${data}`),
+			success: (name, data) => console.log(`${BGgreen}${moment()} -- ${green}${name} -- ${reset}${data}`),
+			warn: (name, data) => console.log(`${BGyellow}${moment()} -- ${yellow}${name} --${reset}${data}`),
 		};
 	}
 
