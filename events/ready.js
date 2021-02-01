@@ -1,4 +1,3 @@
-const chalk = require("chalk");
 const statuses = require("../Util/Client/statuses.json");
 const { toMs } = require("../Util/Util");
 const { statusChangeInterval } = require("../Util/Client/config.json");
@@ -6,8 +5,7 @@ const { statusChangeInterval } = require("../Util/Client/config.json");
 module.exports = {
 	name: "ready",
 	run(client) {
-		console.log(chalk.green(`Logged in as ${client.user.tag} successfully!`));
-
+		client.logger.success("client", `Logged in as ${client.user.tag}`);
 		setInterval(() => {
 			let num;
 			client.guilds.cache.array().map(guild => num += guild.roles.cache.size);

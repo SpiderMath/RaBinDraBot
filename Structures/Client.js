@@ -4,6 +4,7 @@ const AsciiTable = require("ascii-table");
 const commandTable = new AsciiTable("Commands");
 const chalk = require("chalk");
 const path = require("path");
+const moment = require("moment");
 
 const emojis = require("../Util/Client/emojis.json");
 
@@ -37,6 +38,22 @@ class RaBinDraClient extends Discord.Client {
 			minesweeper: new Discord.Collection(),
 		};
 		this.antiSpam = new Discord.Collection();
+
+		const BGred = "\x1b[41m";
+		const BGgreen = "\x1b[42m";
+		const BGyellow = "\x1b[43m";
+		const BGblue = "\x1b[44m";
+		const reset = "\u001b[0m";
+		const red = "\x1b[31m";
+		const green = "\x1b[32m";
+		const blue = "\x1b[34m";
+
+		this.logger = {
+			error: (name, data) => console.log(`${BGred}${moment} --${red}${name}-- ${reset}${data}`),
+			normal: (name, data) => console.log(`${BGblue}${moment} --${blue}${name} -- ${reset}${data}`),
+			success: (name, data) => console.log(`${BGgreen}${moment} -- ${green}${name} -- ${reset}${data}`),
+			warn: (name, data) => console.log(`${BGyellow}${moment} -- ${yellow}${name} --${reset}${data}`),
+		};
 	}
 
 	_loadCommands() {
