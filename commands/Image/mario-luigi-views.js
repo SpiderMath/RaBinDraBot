@@ -89,7 +89,7 @@ module.exports = {
 			message.channel.send(MarioLuigiViews).then(() => msg.delete());
 		}
 		catch(err) {
-			message.client.logger.error("mario-luigi", err.stack);
+			message.client.logger.error("mario-luigi", err.message);
 
 			return message.channel.send(errMsg(err, message)).then(() => msg.delete());
 		}

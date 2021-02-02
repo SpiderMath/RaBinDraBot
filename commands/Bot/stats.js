@@ -68,7 +68,7 @@ module.exports = {
 				.then(() => msg.delete());
 		}
 		catch(err) {
-			message.client.logger.error("stats", err.stack);
+			message.client.logger.error("stats", err.message);
 			return message.channel.send(errMsg(err, message));
 		}
 	},

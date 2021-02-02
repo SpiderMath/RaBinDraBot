@@ -39,6 +39,21 @@ class Canvas {
 			return resolve(lines);
 		});
 	}
+
+	/**
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {String} text
+	 * @param {Number} maxWidth
+	 */
+	static shortenText(ctx, text, maxWidth) {
+		let shorten = false;
+		while (ctx.measureText(`${text}...`).width > maxWidth) {
+			if (!shorten) shorten = true;
+			text = text.substr(0, text.length - 1);
+		}
+		return shorten ? `${text}...` : text;
+	}
+
 }
 
 module.exports = Canvas;

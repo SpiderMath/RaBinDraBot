@@ -19,15 +19,15 @@ module.exports = {
 	async run(message, args) {
 		const msg = await loadingMsg(message);
 		try {
-			const base = loadImage(path.join(__dirname, "../../Assets/Images/gru-plan.png"));
+			const base = await loadImage(path.join(__dirname, "../../Assets/Images/gru-plan.png"));
 			const step1 = args.join(" ");
 			if(step1.length > 150) return message.channel.send("Sorry but I can not accept more than 150 characters for this command!").then(() => msg.delete());
 
 			const collector2 = await message.channel.awaitMessages(Fmsg => Fmsg.author.id === message.author.id && message.content.split("").length < 150, { max: 1, time: toMs(60) });
-			if(!collector2.size) return message.channel.send(`${message.client.assets.emojis.error} You didn't respond, command cancelled. (All of the steps have to be less than 150 characters by the way)`);
+			if(!collector2.size) return message.channel.send(`${message.client.assets.emojis.error} You didn't respond, command cancelled. (All of the steps have to be less than 150 characters by the way)`).then(() => msg.delete());
 
 			const collector3 = await message.channel.awaitMessages(Fmsg => Fmsg.author.id === message.author.id && Fmsg.content.split("").length < 150, { max: 1, time: toMs(60) });
-			if(!collector3.size) return message.channel.send(`${message.client.assets.emojis.error} You didn't respond, command cancelled. (All of the steps have to be less than 150 characters by the way)`);
+			if(!collector3.size) return message.channel.send(`${message.client.assets.emojis.error} You didn't respond, command cancelled. (All of the steps have to be less than 150 characters by the way)`).then(() => msg.delete());
 
 			const step2 = collector2.first().content || "??";
 			const step3 = collector3.first().content || "??";
@@ -58,11 +58,11 @@ module.exports = {
 
 			const GruPlanAttachment = new MessageAttachment(canvas.toBuffer(), "gru-plan.png");
 
-			message.channel.send(GruPlanAttachment);
+			message.channel.send(GruPlanAttachment).then(() => msg.delete());
 		}
 		catch (err) {
-			message.client.logger.error(this.name, err.stack);
-			return message.channel.send(errMsg(err, message));
+			message.client.logger.error(this.name, err.message);
+			return message.channel.send(errMsg(err, message)).then(() => msg.delete());
 		}
 	},
 };

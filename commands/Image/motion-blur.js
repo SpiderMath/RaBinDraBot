@@ -38,7 +38,7 @@ module.exports = {
 			message.channel.send(motionAttachment).then(() => msg.delete());
 		}
 		catch (err) {
-			message.client.logger.error("motion-blur", err.stack);
+			message.client.logger.error("motion-blur", err.message);
 			return message.channel.send(errMsg(err, message)).then(() => msg.delete());
 		}
 	},
