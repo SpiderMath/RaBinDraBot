@@ -23,7 +23,7 @@ module.exports = {
 				.setTitle("Morse Encoder And Decoder")
 				.setDescription(resp);
 
-			message.channel.send(morseEncodeEmbed);
+			message.channel.send({ embed: morseEncodeEmbed, split: true });
 		}
 		else if(args[0].toLowerCase() === "decode") {
 			args.shift();
@@ -37,7 +37,7 @@ module.exports = {
 				.setTitle("Morse Encoder and Decoder")
 				.setDescription(resp);
 
-			message.channel.send(morseDecodeEmbed);
+			message.channel.send({ embed: morseDecodeEmbed, aplit: true });
 		}
 		else {
 			return message.channel.send("Invalid input provided");
