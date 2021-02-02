@@ -90,6 +90,26 @@ class RaBinDraClient extends Discord.Client {
 				const pull = require(`../commands/${dir}/${file}`);
 
 				if(pull.name) {
+					// Setting Category as Dir
+					pull.category = dir;
+
+					// Credits System (Of course for the bot not for the Economy stuff LOL)
+					if(pull.credits) {
+						pull.credits.push({
+							name: "SpiderBro",
+							url: "https://github.com/SpiderMath",
+							reason: "Developer",
+							reasonURL: "https://github.com/SpiderMath/RaBinDraBot",
+						});
+					}
+					else {
+						pull.credits = [{
+							name: "SpiderBro",
+							url: "https://github.com/SpiderMath",
+							reason: "Developer",
+							reasonURL: "https://github.com/SpiderMath/RaBinDraBot",
+						}];
+					}
 					this.commands.set(pull.name.toLowerCase(), pull);
 					commandTable.addRow(chalk.green(file));
 				}
