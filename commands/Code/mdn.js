@@ -17,7 +17,6 @@ module.exports = {
 			if(!data.documents.length) return message.channel.send(`${message.client.assets.emojis.error} I couldn't find any results for that query!`);
 			const Info = data.documents[0];
 
-			console.log(Info);
 			const MDNEmbed = MessageEmbed(message.author, green)
 				.setTitle("MDN Search")
 				.setThumbnail("https://i.imgur.com/DFGXabG.png")
