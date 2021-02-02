@@ -37,6 +37,7 @@ class RaBinDraClient extends Discord.Client {
 			aki: new Discord.Collection(),
 			minesweeper: new Discord.Collection(),
 		};
+		this.categories = fs.readdirSync(path.join(__dirname, "../commands/"));
 		this.antiSpam = new Discord.Collection();
 
 		this.botInvite = this.generateInvite({
