@@ -17,6 +17,7 @@ const SendOwO = require("../Plugins/Message/SendOwO");
 const SendUwU = require("../Plugins/Message/SendUwU");
 const AutoReactOnPog = require("../Plugins/Message/AutoReactOnPog");
 const GlobalCommandLeaderBoard = require("../Plugins/Message/GlobalCommandLeaderBoard");
+const GuildCommandLeaderBoard = require("../Plugins/Message/GuildCommandLeaderBoard");
 
 module.exports = {
 	name: "message",
@@ -124,6 +125,7 @@ module.exports = {
 			command.run(message, args);
 
 			await GlobalCommandLeaderBoard(message, command);
+			await GuildCommandLeaderBoard(message, command);
 		}
 		catch(err) {
 			return message.channel.send(`Something broke while executing this command \n **Error:** ${err.message}`);
