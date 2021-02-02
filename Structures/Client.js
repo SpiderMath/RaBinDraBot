@@ -82,6 +82,7 @@ class RaBinDraClient extends Discord.Client {
 	}
 
 	_loadCommands() {
+		// Dynamically loading Commands
 		fs.readdirSync(path.join(__dirname, "..", "commands")).forEach(dir => {
 			const files = fs.readdirSync(path.join(__dirname, "..", "commands", dir)).filter(fName => fName.endsWith(".js"));
 
@@ -110,6 +111,7 @@ class RaBinDraClient extends Discord.Client {
 	}
 
 	_loadEvents() {
+		// Dynamically Loading Events Oof
 		const eFiles = fs.readdirSync(path.join(__dirname, "..", "events")).filter(fName => fName.endsWith(".js"));
 		for(const eFile of eFiles) {
 			const ePull = require(`../events/${eFile}`);
