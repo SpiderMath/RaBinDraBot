@@ -5,7 +5,8 @@ const { MessageAttachment } = require("discord.js");
 
 module.exports = {
 	name: "kyon-gun",
-	description: "Gets a user shot by Kyon",
+	description: "Gets a user shot by Kyon (endless eight)",
+	aliases: ["endless-eight"],
 	credits: [
 		{
 			name: "The Melancholy of Haruhi Suzumiya",
