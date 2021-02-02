@@ -61,7 +61,7 @@ module.exports = {
 			message.channel.send(GruPlanAttachment);
 		}
 		catch (err) {
-			message.client.logger.error();
+			message.client.logger.error(this.name, err.stack);
 			return message.channel.send(errMsg(err, message));
 		}
 	},
