@@ -50,6 +50,19 @@ class RaBinDraClient extends Discord.Client {
 				"ADMINISTRATOR",
 			],
 		});
+
+		const red = "\x1b[31m";
+		const green = "\x1b[32m";
+		const yellow = "\x1b[33m";
+		const blue = "\x1b[34m";
+		const reset = "\u001b[0m";
+
+		this.logger = {
+			success: (name, data) => console.log(`${green}${moment()} - ${name}: ${reset} ${data}`),
+			error: (name, data) => console.log(`${red}${moment()} - ${name}: ${reset} ${data}`),
+			info: (name, data) => console.log(`${blue}${moment()} - ${name}: ${reset} ${data}`),
+			warn: (name, data) => console.log(`${yellow}${moment()} - ${name}: ${reset} ${data}`),
+		};
 	}
 
 	_loadCommands() {
