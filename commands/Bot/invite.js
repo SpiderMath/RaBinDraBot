@@ -11,7 +11,8 @@ module.exports = {
 			.setTitle(`Invite ${message.client.user.username} to Your Server`)
 			.setDescription(stripIndents`
 				Here is the Invite [Link](${message.client.botInvite})
-			`);
+			`)
+			.setThumbnail(message.client.user.displayAvatarURL({ dynamic: true }));
 
 		message.channel.send(InvitationEmbed);
 	},

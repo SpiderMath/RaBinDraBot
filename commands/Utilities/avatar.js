@@ -10,7 +10,7 @@ module.exports = {
 
 		const avatarEmbed = MessageEmbed(message.author, green)
 			.setTitle(`Avatar of ${user.tag}`)
-			.setImage(user.displayAvatarURL({ dynamic: true, size: 2048 }));
+			.setImage(user.displayAvatarURL({ dynamic: true, size: 4096 }));
 
 		message.channel.send(avatarEmbed);
 	},
