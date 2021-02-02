@@ -5,6 +5,7 @@ const commandTable = new AsciiTable("Commands");
 const chalk = require("chalk");
 const path = require("path");
 const moment = require("moment");
+const DisTube = require("distube");
 
 const emojis = require("../Util/Client/emojis.json");
 
@@ -28,18 +29,26 @@ class RaBinDraClient extends Discord.Client {
 	}
 
 	_loadClient() {
+		// Command Handler Related
 		this.commands = new Discord.Collection();
 		this.aliases = new Discord.Collection();
+		this.categories = fs.readdirSync(path.join(__dirname, "../commands/"));
+
+		// Assets
 		this.assets = {
 			emojis: emojis,
 		};
+
+		// Game Rooms
 		this.games = {
 			aki: new Discord.Collection(),
 			minesweeper: new Discord.Collection(),
 		};
-		this.categories = fs.readdirSync(path.join(__dirname, "../commands/"));
+
+		// Anti-Spam Gonna work on it
 		this.antiSpam = new Discord.Collection();
 
+		// Bot Invite for Invite Command
 		this.botInvite = this.generateInvite({
 			permissions: [
 				"ADD_REACTIONS",
@@ -52,6 +61,7 @@ class RaBinDraClient extends Discord.Client {
 			],
 		});
 
+		// Custom Logger
 		const red = "\x1b[31m";
 		const green = "\x1b[32m";
 		const yellow = "\x1b[33m";
@@ -64,6 +74,11 @@ class RaBinDraClient extends Discord.Client {
 			info: (name, data) => console.log(`${blue}${moment()} - ${name}: ${reset} ${data}`),
 			warn: (name, data) => console.log(`${yellow}${moment()} - ${name}: ${reset} ${data}`),
 		};
+
+		// Basic DisTube setup, gonna work on it later :P
+		const disTube = new DisTube(this, { searchSongs: true, leaveOnEmpty: true });
+
+		this.distube = disTube;
 	}
 
 	_loadCommands() {
