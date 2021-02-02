@@ -16,7 +16,7 @@ const OwOCounter = require("../Plugins/Message/OwOCounter");
 const SendOwO = require("../Plugins/Message/SendOwO");
 const SendUwU = require("../Plugins/Message/SendUwU");
 const AutoReactOnPog = require("../Plugins/Message/AutoReactOnPog");
-
+const GlobalCommandLeaderBoard = require("../Plugins/Message/GlobalCommandLeaderBoard");
 
 module.exports = {
 	name: "message",
@@ -122,6 +122,8 @@ module.exports = {
 		// Executing Code~
 		try {
 			command.run(message, args);
+
+			await GlobalCommandLeaderBoard(message, command);
 		}
 		catch(err) {
 			return message.channel.send(`Something broke while executing this command \n **Error:** ${err.message}`);

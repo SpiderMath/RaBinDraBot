@@ -1,3 +1,4 @@
 {
-	"owoCounter": "mongodb+srv://SpiderBro:<password>@cluster0.x5g5p.mongodb.net/Counter?retryWrites=true&w=majority"
+	"owoCounter": "mongodb+srv://SpiderBro:<password>@cluster0.x5g5p.mongodb.net/Counter?retryWrites=true&w=majority",
+	"globalCommandLB": ""
 }
