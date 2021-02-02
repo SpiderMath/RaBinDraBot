@@ -54,6 +54,30 @@ class Canvas {
 		return shorten ? `${text}...` : text;
 	}
 
+	/**
+	 * @param {canvas.Image} data
+	 * @param {Number} maxWidth
+	 * @param {Number} maxHeight
+	 * @param {Number} widthOffset
+	 * @param {Number} heightOffest
+	 */
+	static centerImagePart(data, maxWidth, maxHeight, widthOffset, heightOffest) {
+		let { width, height } = data;
+		if (width > maxWidth) {
+			const ratio = maxWidth / width;
+			width = maxWidth;
+			height *= ratio;
+		}
+		if (height > maxHeight) {
+			const ratio = maxHeight / height;
+			height = maxHeight;
+			width *= ratio;
+		}
+		const x = widthOffset + ((maxWidth / 2) - (width / 2));
+		const y = heightOffest + ((maxHeight / 2) - (height / 2));
+		return { x, y, width, height };
+	}
+
 }
 
 module.exports = Canvas;
