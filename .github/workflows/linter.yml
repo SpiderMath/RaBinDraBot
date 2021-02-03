@@ -8,10 +8,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v15
+      - name: Install Node v14
         uses: actions/setup-node@v1
         with:
-          node-version: 15
+          node-version: 14
 
       - name: Install ESLint v7
         run: npm install -g eslint@7
