@@ -124,9 +124,7 @@ class Util {
 			useUnifiedTopology: true,
 		});
 
-		const model = connection.model(schemaName, schema);
-
-		return model;
+		return connection;
 	}
 
 	/**

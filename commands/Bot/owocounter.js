@@ -12,24 +12,30 @@ module.exports = {
 		const user = message.mentions.users.first() || message.client.users.cache.get(args[0]) || message.author;
 
 		try {
-			const Data = await mongoModel(owoCounter, OwOCounterSchema, "counter");
+			const connection = await mongoModel(owoCounter);
 
-			Data.findOne({ _id: message.guild.id }, (err, data) => {
-				if(err) return message.channel.send(errMsg(err));
+			try {
+				const Data = connection.model("counter", OwOCounterSchema);
+				Data.findOne({ _id: message.guild.id }, (err, data) => {
+					if(err) return message.channel.send(errMsg(err));
 
-				if(!data) return message.channel.send(`${message.client.assets.emojis.error} ${message.guild.name} isn't cool at all, no one has used any OwOs or UwUs yet!`);
+					if(!data) return message.channel.send(`${message.client.assets.emojis.error} ${message.guild.name} isn't cool at all, no one has used any OwOs or UwUs yet!`);
 
-				const userData = data.data.filter(d => d.user === user.id)[0];
-				if(!userData) return message.channel.send(`${message.client.assets.emojis.error} ${user.username} have not used any OwOs or UwUs till now`);
+					const userData = data.data.filter(d => d.user === user.id)[0];
+					if(!userData) return message.channel.send(`${message.client.assets.emojis.error} ${user.username} have not used any OwOs or UwUs till now`);
 
 
-				const dataEmbed = MessageEmbed(message.author, green)
-					.setTitle(`${user.username}'s OwO Count`)
-					.setDescription(`**OwO Count:** ${userData.count}`)
-					.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }));
+					const dataEmbed = MessageEmbed(message.author, green)
+						.setTitle(`${user.username}'s OwO Count`)
+						.setDescription(`**OwO Count:** ${userData.count}`)
+						.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }));
 
-				message.channel.send(dataEmbed);
-			});
+					message.channel.send(dataEmbed);
+				});
+			}
+			finally {
+				connection.close();
+			}
 		}
 		catch(err) {
 			message.channel.send(errMsg(err, message));

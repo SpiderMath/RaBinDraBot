@@ -12,27 +12,33 @@ module.exports = {
 	async run(message) {
 		const msg = await loadingMsg(message);
 		try {
-			const Data = await mongoModel(owoCounter, OwOCounterSchema, "counter");
+			const connection = await mongoModel(owoCounter);
 
-			Data.findById({ _id: message.guild.id }, (err, data) => {
-				if(err) return message.channel.send(errMsg(err, message)).then(() => msg.delete());
+			try {
+				const Data = connection.model("counter", OwOCounterSchema);
+				Data.findById({ _id: message.guild.id }, (err, data) => {
+					if(err) return message.channel.send(errMsg(err, message)).then(() => msg.delete());
 
-				if(!data) return message.channel.send(`${message.client.assets.emojis.error} Seems like this server has never used OwOs and UwUs...`).then(() => msg.delete());
-				let sortedString = "";
-				const sortedData = data.data.sort((a, b) => { return a.count - b.count; }).slice(0, 5);
+					if(!data) return message.channel.send(`${message.client.assets.emojis.error} Seems like this server has never used OwOs and UwUs...`).then(() => msg.delete());
+					let sortedString = "";
+					const sortedData = data.data.sort((a, b) => { return a.count - b.count; }).slice(0, 5);
 
-				sortedData.forEach(object => {
-					sortedString = stripIndents`
+					sortedData.forEach(object => {
+						sortedString = stripIndents`
 						**❯ Username:** ${message.client.users.cache.get(object.user).username}  **❯ Count:** ${object.count}
 					`;
+					});
+
+					const LeaderBoardEmbed = MessageEmbed(message.author, green)
+						.setTitle(`Top OwOers and UwUers in ${message.guild.name}`)
+						.setDescription(sortedString);
+
+					message.channel.send(LeaderBoardEmbed).then(() => msg.delete());
 				});
-
-				const LeaderBoardEmbed = MessageEmbed(message.author, green)
-					.setTitle(`Top OwOers and UwUers in ${message.guild.name}`)
-					.setDescription(sortedString);
-
-				message.channel.send(LeaderBoardEmbed).then(() => msg.delete());
-			});
+			}
+			finally {
+				connection.close();
+			}
 		}
 		catch(err) {
 			message.channel.send(errMsg(err, message)).then(() => msg.delete());

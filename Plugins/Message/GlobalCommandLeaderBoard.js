@@ -4,26 +4,33 @@ const { globalCommandLB } = require("../../Util/Client/mongodbUris.json");
 
 module.exports = async function GlobalCommandLeaderBoard(message, command) {
 	try {
-		const Data = await mongoModel(globalCommandLB, CommandCounterSchema, "counter");
+		const connection = await mongoModel(globalCommandLB);
 
-		Data.findOne({ _id: command.name }, (err, data) => {
-			if(err) dmOwner(err, message);
+		try {
+			const Data = connection.model("counter", CommandCounterSchema);
 
-			if(!data) {
-				const newData = new Data({
-					_id: command.name,
-					count: 1,
-				});
+			Data.findOne({ _id: command.name }, (err, data) => {
+				if(err) dmOwner(err, message);
 
-				newData.save().catch(err => dmOwner(err, message));
-			}
+				if(!data) {
+					const newData = new Data({
+						_id: command.name,
+						count: 1,
+					});
 
-			else {
-				data.count += 1;
+					newData.save().catch(err => dmOwner(err, message));
+				}
 
-				data.save().catch(err => dmOwner(err, message));
-			}
-		});
+				else {
+					data.count += 1;
+
+					data.save().catch(err => dmOwner(err, message));
+				}
+			});
+		}
+		finally {
+			connection.close();
+		}
 	}
 	catch (err) {
 		dmOwner(err, message);

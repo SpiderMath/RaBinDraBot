@@ -15,37 +15,43 @@ module.exports = async function OwOCounter(message) {
 
 
 	try {
-		const Data = await mongoModel(owoCounter, OwOCounterSchema, "counter");
+		const connection = await mongoModel(owoCounter);
 
-		Data.findOne({ _id: message.guild.id }, (err, data) => {
-			if(err) return dmOwner(err, message);
+		try {
+			const Data = connection.model("counter", OwOCounterSchema);
+			Data.findOne({ _id: message.guild.id }, (err, data) => {
+				if(err) return dmOwner(err, message);
 
-			if(!data) {
-				const newData = new Data({
-					_id: message.guild.id,
-					data: [
-						{ user: message.author.id, count: 1 },
-					],
-				});
+				if(!data) {
+					const newData = new Data({
+						_id: message.guild.id,
+						data: [
+							{ user: message.author.id, count: 1 },
+						],
+					});
 
-				message.channel.send("**OwO Counter:** +1");
-				newData
-					.save()
-					.catch(error => dmOwner(error, message));
+					message.channel.send("**OwO Counter:** +1");
+					newData
+						.save()
+						.catch(error => dmOwner(error, message));
 
-			}
-			else {
-				const userCount = data.data.filter(d => d.user === message.author.id)[0];
-				if(!userCount) userCount.user = message.author.id;
-				userCount.count += 1;
+				}
+				else {
+					const userCount = data.data.filter(d => d.user === message.author.id)[0];
+					if(!userCount) userCount.user = message.author.id;
+					userCount.count += 1;
 
-				message.channel.send("**OwO Counter:** +1");
+					message.channel.send("**OwO Counter:** +1");
 
-				data
-					.save()
-					.catch(error => dmOwner(error, message));
-			}
-		});
+					data
+						.save()
+						.catch(error => dmOwner(error, message));
+				}
+			});
+		}
+		finally {
+			connection.close();
+		}
 	}
 	catch(err) {
 		dmOwner(err, message);
